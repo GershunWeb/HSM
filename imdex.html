@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthy Mind Space</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fbf0e3;
+      color: #333;
+    }
+
+    /* ----- ШАПКА ----- */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 40px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+      transition: top 0.3s;
+      z-index: 1000;
+    }
+
+    header .logo {
+      font-size: 1.7em;
+      font-weight: bold;
+      color: #444;
+    }
+
+    /* Навигация */
+    .nav-center {
+      display: flex;
+      gap: 35px;
+      font-size: 20px;
+      font-weight: 600;
+      margin-left: -140px;
+      /* ← двигай тут */
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+      position: relative;
+      padding: 6px 0;
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: #f5a623;
+      left: 0;
+      bottom: -3px;
+      transition: 0.3s;
+      border-radius: 20px;
+    }
+
+    nav a:hover {
+      color: #f5a623;
+      transform: translateY(-2px);
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Профиль */
+    .profile {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid #f3f3f3;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+      transition: 0.3s;
+    }
+
+    .profile:hover {
+      transform: scale(1.12);
+    }
+
+    .profile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ----- СЛАЙДЕР ----- */
+
+    .slider-container {
+      width: 100%;
+      margin-top: 90px;
+      /* чтобы слайдер не попадал под шапку */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slider {
+      width: 100%;
+      max-width: 2300px;
+      height: 60vh;
+      overflow: hidden;
+      position: relative;
+      border-radius: 30px;
+      box-shadow: 0 18px 35px rgba(0, 0, 0, 0.12);
+      background: white;
+    }
+
+    /* Лента слайдов */
+    .slides {
+      display: flex;
+      height: 100%;
+      transition: transform 1s ease;
+    }
+
+    /* Один слайд */
+    .slide {
+      min-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Контент слайда */
+    .slide-content {
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      /* Всегда видно */
+      transform: scale(1);
+      /* Без приближения */
+      transition: none;
+      /* Убираем анимации */
+    }
+
+    .slide.active .slide-content {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .slide-content img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ----- СПЕЦИАЛИСТЫ ----- */
+
+    .specialists-section {
+      max-width: 2200px;
+      margin: 50px auto;
+      padding: 0 40px;
+    }
+
+    .specialists-section h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 50px;
+      font-weight: 700;
+      color: #444;
+    }
+
+    .specialists-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 50px;
+    }
+
+    /* Горизонтальная карточка */
+    .specialist-card {
+      display: flex;
+      background: #FFF1D0;
+      /* цвет карточки */
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .specialist-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Фото слева */
+    .spec-photo {
+      width: 120px;
+      height: 120px;
+      background: #d9c4a1;
+      border-radius: 14px;
+      margin: 14px;
+      flex-shrink: 0;
+    }
+
+    .spec-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-radius: 14px;
+    }
+
+    /* Информация справа */
+    .spec-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .spec-info h3 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    /* Группа кнопок */
+    .spec-info .btn-group {
+      display: flex;
+      gap: 15px;
+      /* расстояние между кнопками */
+      margin-top: 10px;
+    }
+
+    /* Кнопки */
+    .spec-info .btn-group button {
+      align-self: flex-start;
+      background: #708238;
+      /* Консультация */
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s, opacity 0.3s;
+      font-weight: 600;
+    }
+
+    .spec-info .btn-group button:hover {
+      transform: translateY(-3px);
+      opacity: 0.9;
+    }
+
+    /* Подробнее */
+    .spec-info .btn-group .more-btn {
+      background: rgb(255, 251, 239);
+      color: black;
+      border: 2px solid #708238;
+    }
+
+    .spec-info .btn-group .more-btn:hover {
+      transform: translateY(-3px);
+      opacity: 0.9;
+      background: #f0f0f0;
+      /* легкий эффект при наведении */
+    }
+
+    /* ----- ТЕСТЫ ----- */
+    .tests-section {
+      max-width: 2000px;
+      margin: 70px auto;
+      padding: 0 40px;
+    }
+
+    .tests-section h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 50px;
+      font-weight: 700;
+      color: #444;
+    }
+
+    .tests-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 50px;
+      position: relative;
+    }
+
+    /* Разделяющие линии */
+    .tests-grid::before,
+    .tests-grid::after {
+      content: "";
+      position: absolute;
+      background: #d4c4a9;
+      opacity: 0.6;
+    }
+
+    .tests-grid::before {
+      width: 2px;
+      height: 100%;
+      left: 50%;
+      top: 0;
+    }
+
+    .tests-grid::after {
+      height: 2px;
+      width: 100%;
+      left: 0;
+      top: 50%;
+    }
+
+    /* Карточка теста */
+    .test-card {
+      background: #FFF1D0;
+      padding: 35px;
+      border-radius: 25px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      transition: .35s ease;
+    }
+
+    .test-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+    }
+
+    .test-card h3 {
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #333;
+    }
+
+    .test-card p {
+      font-size: 18px;
+      line-height: 1.55;
+      margin-bottom: 25px;
+      color: #444;
+    }
+
+    /* Кнопка */
+    .test-card button {
+      background: #708238;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 14px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .test-card button:hover {
+      transform: translateY(-3px);
+      opacity: 0.9;
+    }
+
+    /* Стили для ссылки-боттона на карточках тестов */
+    .test-link {
+      display: inline-block;
+      background: #708238;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 600;
+      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+      box-shadow: 0 8px 20px rgba(73,106,103,0.12);
+    }
+
+    .test-link:hover {
+      transform: translateY(-3px);
+      opacity: 0.95;
+      box-shadow: 0 14px 30px rgba(73,106,103,0.16);
+    }
+
+    /* ----- ПОДПИСКИ ----- */
+    .subs-section {
+      max-width: 2000px;
+      margin: 80px auto;
+      padding: 0 40px;
+    }
+
+    .subs-section h2 {
+      text-align: center;
+      font-size: 38px;
+      margin-bottom: 55px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .subs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 60px;
+    }
+
+    /* Карточка подписки */
+    .sub-card {
+      background: #E7F2F1;
+      padding: 40px;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(90, 125, 124, 0.15);
+      transition: 0.4s ease;
+      transform: translateY(0);
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .sub-card:hover {
+      transform: translateY(-12px) scale(1.03);
+      box-shadow: 0 18px 45px rgba(90, 125, 124, 0.25);
+    }
+
+    /* Активная карточка (при клике) */
+    .sub-card.active {
+      border-color: #5A7D7C !important;
+      box-shadow: 0 18px 45px rgba(90, 125, 124, 0.35);
+    }
+
+    /* Не выделяем премиум по умолчанию */
+    .sub-card h3 {
+      font-size: 30px;
+      color: #3f5554;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .sub-card .price {
+      font-size: 26px;
+      font-weight: 600;
+      color: #5A7D7C;
+      margin-bottom: 20px;
+    }
+
+    /* Список функций */
+    .sub-card ul {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    .sub-card ul li {
+      font-size: 18px;
+      color: #3e4e4d;
+      margin-bottom: 10px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .sub-card ul li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #889797;
+      font-weight: bold;
+    }
+
+    /* Кнопка внутренняя */
+    .sub-card button {
+      background: white;
+      border: 2px solid #5A7D7C;
+      color: #000;
+      padding: 14px 35px;
+      border-radius: 14px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+
+    .sub-card button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(90, 125, 124, 0.3);
+    }
+
+    .reviews-section {
+      color: #333;
+    }
+
+    #review-doctor-stars {
+      font-size: 22px;
+      color: #ffb400;
+    }
+
+    /* ===== РАЗДЕЛ ОТЗЫВЫ — ПОЛНЫЕ СТИЛИ ===== */
+    .reviews-section {
+      max-width: 1800px;
+      margin: 80px auto;
+      padding: 0 40px;
+      color: #333;
+    }
+
+    .reviews-title {
+      text-align: center;
+      font-size: 40px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 40px;
+    }
+
+    /* Контейнер с двумя колонками: список врачей | окно отзывов */
+    .reviews-container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ЛЕВАЯ КОЛОНКА — СПИСОК ВРАЧЕЙ */
+    .reviews-doctors-list {
+      background: #f8f5ef;
+      padding: 18px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Отдельный элемент врача в списке */
+    .doctor-item {
+      padding: 12px 14px;
+      background: white;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s ease;
+      border: 2px solid transparent;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 4px 12px rgba(20,20,20,0.03);
+      padding-left: 16px;
+    }
+
+    .doctor-item:hover {
+      transform: translateY(-3px);
+      background: #f7f6f3;
+      box-shadow: 0 10px 22px rgba(20,20,20,0.05);
+    }
+
+    .doctor-item.active {
+      background: #eef6f4;
+      border-color: #5A7D7C;
+      box-shadow: 0 12px 26px rgba(90, 125, 124, 0.10);
+    }
+
+    /* ПРАВОЕ ОКНО — область отзывов */
+    .reviews-window {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 12px 36px rgba(10, 10, 10, 0.06);
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      height: auto;
+    }
+
+    /* Шапка врача: ФИО + звезды */
+    .reviews-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .reviews-header h3 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    #review-doctor-stars {
+      font-size: 20px;
+      color: #ffb400;
+      letter-spacing: 2px;
+    }
+
+    /* Список отзывов (скроллируемый) */
+    .reviews-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 8px 0 16px 0;
+    }
+
+    .reviews-list::-webkit-scrollbar {
+      width: 10px;
+    }
+    .reviews-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .reviews-list::-webkit-scrollbar-thumb {
+      background: rgba(90,125,124,0.18);
+      border-radius: 8px;
+    }
+
+    .review-item {
+      background: #fbfaf8;
+      padding: 14px 16px;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(20,20,20,0.04);
+      font-size: 16px;
+      line-height: 1.55;
+      color: #2f2f2f;
+      border-left: 4px solid rgba(90,125,124,0.06);
+    }
+
+    .review-item .meta {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    /* Плейсхолдер при пустом списке */
+    .placeholder {
+      color: #777;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    /* Блок ввода отзыва */
+    .review-input-box {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      margin-top: 6px;
+    }
+
+    .review-input-box textarea {
+      flex-grow: 1;
+      min-height: 84px;
+      max-height: 180px;
+      border-radius: 12px;
+      border: 1px solid #e6e4e2;
+      padding: 14px;
+      font-size: 15px;
+      resize: vertical;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .12s ease;
+      background: #fff;
+    }
+
+    .review-input-box textarea:focus {
+      outline: none;
+      border-color: #5A7D7C;
+      box-shadow: 0 10px 24px rgba(90, 125, 124, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* Кнопка отправки */
+    .send-review-btn {
+      background: linear-gradient(180deg, #5A7D7C, #466a67);
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      transition: transform .16s ease, box-shadow .16s ease;
+      box-shadow: 0 8px 20px rgba(73,106,103,0.12);
+    }
+
+    .send-review-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(73,106,103,0.16);
+    }
+
+    /* Адаптация для мобильных: колонки в столбец */
+    @media (max-width: 900px) {
+      .reviews-container {
+        grid-template-columns: 1fr;
+      }
+
+      .reviews-doctors-list {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+      }
+
+      .doctor-item {
+        min-width: 160px;
+        flex: 0 0 auto;
+        margin-bottom: 0;
+      }
+
+      .reviews-window {
+        height: auto;
+        margin-top: 18px;
+      }
+    }
+
+    /* --- Glass Grid Panel (весь блок) --- */
+    #glass-panel {
+      position: relative;
+      width: 100%;
+      padding: 80px 24px;
+      /* отступ вокруг панели */
+      box-sizing: border-box;
+      margin-top: 40px;
+      margin-bottom: 60px;
+      /* чтобы панель визуально "выпрыгивала" над фоном */
+    }
+
+    /* затемнённый/контрастный фон под панелью, чтобы не сливалось с бежевым */
+    .glass-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      /* лёгкий градиент и тонкая текстура для контраста */
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.0) 0%, rgba(90, 125, 124, 0.02) 100%);
+    }
+
+    .glass-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      /* панель растянута на всю ширину */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .glass-container h2 {
+      font-size: 50px;
+      color: #333;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      margin: 0;
+    }
+
+    /* Общая стеклянная панель (фон за карточками) */
+    .glass-grid {
+      width: 100%;
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      align-items: stretch;
+
+      /* Внешняя "стеклянная" рамка */
+      padding: 28px;
+      border-radius: 22px;
+
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.45));
+      /* блокируем фон за счёт blur — поддержка современных браузеров */
+      backdrop-filter: blur(8px) saturate(1.05);
+      -webkit-backdrop-filter: blur(8px) saturate(1.05);
+      box-shadow:
+        0 30px 60px rgba(20, 20, 20, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: transform .45s cubic-bezier(.2, .9, .3, 1);
+      overflow: visible;
+    }
+
+    /* --- карточки внутри панели --- */
+    .glass-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 26px;
+      border-radius: 18px;
+      cursor: default;
+      background: linear-gradient(180deg, #FFF9EC 0%, #FFF1D0 100%);
+      /* карточка прежнего цвета */
+      box-shadow:
+        0 10px 30px rgba(48, 40, 24, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(220, 180, 130, 0.35);
+      transition: transform .35s ease, box-shadow .35s ease, z-index .02s;
+      transform-origin: center;
+      outline: none;
+    }
+
+    .glass-card:focus {
+      box-shadow:
+        0 18px 45px rgba(48, 40, 24, 0.18),
+        0 0 0 4px rgba(90, 125, 124, 0.10);
+      transform: translateY(-8px) scale(1.01);
+    }
+
+    /* маленькая декоративная полоска слева у каждой карточки */
+    .card-accent {
+      position: absolute;
+      left: 0;
+      top: 16px;
+      bottom: 16px;
+      width: 6px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #f5a623, #5A7D7C);
+      box-shadow: 0 4px 14px rgba(90, 125, 124, 0.12);
+      transform-origin: center;
+    }
+
+    .glass-card h3 {
+      margin: 0;
+      font-size: 28px;
+      color: #333;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+
+    .glass-card .card-lead {
+      margin: 6px 0 0 0;
+      font-size: 18px;
+      color: #3d3d3d;
+      font-weight: 600;
+    }
+
+    .glass-card .card-text {
+      margin: 4px 0 0 0;
+      font-size: 18px;
+      color: #444;
+      line-height: 1.65;
+    }
+
+    .card-actions {
+      margin-top: 18x;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* Акцентная кнопка */
+    .btn-primary {
+      background: linear-gradient(180deg, #5A7D7C, #496a68);
+      color: #fff;
+      border: none;
+      padding: 14px 26px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(90, 125, 124, 0.18);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s;
+      font-size: 18px !important;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.03);
+    }
+
+    /* Прозрачная кнопка */
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.9);
+      color: #222;
+      border: 1px solid rgba(90, 125, 124, 0.18);
+      padding: 13px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s;
+      font-size: 17px !important;
+    }
+
+    .btn-ghost:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /* hover эффект: аккуратный lift и лёгкий наклон */
+    .glass-card:hover {
+      transform: translateY(-12px) rotateX(1deg);
+      box-shadow:
+        0 28px 60px rgba(30, 25, 18, 0.20),
+        inset 0 6px 20px rgba(255, 255, 255, 0.5);
+      z-index: 6;
+    }
+
+    /* тонкая декоративная волна/блик поверх */
+    .glass-container::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      left: 6%;
+      right: 6%;
+      top: 46%;
+      height: 12%;
+      background: linear-gradient(90deg, rgba(90, 125, 124, 0.03), rgba(245, 166, 35, 0.03), rgba(90, 125, 124, 0.03));
+      border-radius: 40px;
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    /* адаптив */
+    @media (max-width: 1100px) {
+      .glass-grid {
+        grid-template-columns: 1fr;
+        padding: 18px;
+        border-radius: 16px;
+        gap: 18px;
+      }
+
+      #glass-panel {
+        padding: 60px 16px;
+      }
+
+      .glass-container h2 {
+        font-size: 34px;
+      }
+
+      .card-accent {
+        top: 12px;
+        bottom: 12px;
+        width: 5px;
+      }
+    }
+
+    @media (min-width: 1101px) and (max-width: 1600px) {
+      .glass-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 22px;
+      }
+    }
+
+    /* ====== FOOTER ====== */
+
+    footer {
+      width: 100%;
+      background: #f4f5f9;
+      color: #111;
+      padding: 60px 0;
+      margin-top: 80px;
+    }
+
+    footer .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 768px) {
+      footer .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    /* Контакты */
+    footer h3 {
+      font-size: 30px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    footer a {
+      text-decoration: none;
+      color: #111;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Логотип текст */
+    footer h1 {
+      font-size: 40px;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    /* --- МОДАЛ ОПЛАТЫ --- */
+    .pay-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .pay-modal {
+      width: 720px;
+      max-width: 98%;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 30px 80px rgba(10,10,10,0.45);
+      overflow: hidden;
+      font-family: inherit;
+    }
+
+    .pay-modal .header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:18px 22px;
+      background: linear-gradient(90deg,#f7f7f7,#fff);
+      border-bottom:1px solid #eee;
+    }
+
+    .pay-modal .body {
+      padding: 20px 22px 28px 22px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 18px;
+    }
+
+    .pay-modal h4 { margin:0 0 6px 0; font-size:18px }
+    .pay-modal p.small { margin:0 0 12px 0; color:#666; font-size:14px }
+
+    .banks-list { display:flex; flex-direction:column; gap:10px }
+    .bank-option { padding:12px 14px; border-radius:10px; border:1px solid #e8e8e8; cursor:pointer; display:flex; align-items:center; gap:12px }
+    .bank-option.selected { border-color:#5A7D7C; box-shadow: 0 8px 20px rgba(90,125,124,0.08); }
+    .bank-logo { width:44px; height:30px; background:#f4f4f4; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:700; color:#333 }
+
+    .pay-form { display:flex; flex-direction:column; gap:10px }
+    .pay-form input[type=text], .pay-form input[type=tel], .pay-form select { padding:12px 14px; border-radius:10px; border:1px solid #e8e8e8; font-size:15px }
+    .pay-actions { display:flex; gap:12px; align-items:center; margin-top:10px }
+    .pay-actions .btn { padding:12px 18px; border-radius:10px; cursor:pointer; border:none }
+    .btn-cancel { background:#f3f3f3 }
+    .btn-pay { background: linear-gradient(180deg,#5A7D7C,#3f615f); color:#fff }
+
+    .pay-result { padding:18px; border-radius:10px; background:#f6fff9; border:1px solid rgba(90,125,124,0.12); color:#1b6a4f }
+    .pay-note { margin-top:10px; color:#666; font-size:13px }
+
+    /* МОДАЛ ДЛЯ СПЕЦИАЛИСТА */
+    .info-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:2100; padding:18px }
+    .info-modal { width:820px; max-width:98%; background:#fff; border-radius:12px; box-shadow:0 30px 80px rgba(0,0,0,0.45); overflow:hidden; display:grid; grid-template-columns:260px 1fr }
+    .info-modal .left { padding:18px; background:linear-gradient(180deg,#fafafa,#fff); display:flex; flex-direction:column; gap:12px; align-items:center }
+    .info-modal .left img { width:220px; height:220px; object-fit:cover; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.08) }
+    .info-modal .right { padding:20px 22px; }
+    .info-modal h3 { margin:0 0 6px 0 }
+    .info-modal .meta { color:#666; font-size:14px; margin-bottom:12px }
+    .info-modal .bio { font-size:15px; line-height:1.6; color:#333 }
+    .info-modal .actions { margin-top:16px; display:flex; gap:10px }
+    .info-modal .btn-primary, .info-modal .btn-ghost { font-size:15px }
+
+
+    /* Навигация */
+    footer ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    footer ul li {
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    /* Нижняя полоса */
+    footer .bottom {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
+    /* Правый блок */
+    .nav-block {
+      text-align: right;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .nav-block .big {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    /* Правый блок красивее */
+    .nav-block {
+      text-align: right;
+      padding: 28px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(240, 240, 255, 0.55));
+      border-radius: 20px;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+/* Общий стиль для p */
+footer p {
+font-size: 20px;
+line-height: 1.55;
+margin: 4px 0;
+color: #222;
+}
+
+footer p a {
+font-size: 20px;
+}
+
+  </style>
+</head>
+
+<body>
+  <div id="top"></div>
+  <header id="header">
+    <a href="#top" class="logo">Healthy Mind Space</a>
+    <nav class="nav-center">
+      <a href="#specialists">Консультации</a>
+      <a href="#tests">Тесты</a>
+      <a href="#subscriptions">Подписки</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#about">О Проекте</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+    <div class="profile">
+      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop" alt="Фото профиля">
+    </div>
+  </header>
+
+  <!-- ----- СЛАЙДЕР ----- -->
+  <div class="slider-container">
+    <div class="slider">
+      <div class="slides">
+
+        <div class="slide active">
+          <div class="slide-content">
+            <img src="https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d?q=80&w=1600&auto=format&fit=crop" alt="Спокойный пейзаж: утренний берег">
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="slide-content">
+            <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1600&auto=format&fit=crop" alt="Уютная комната для консультации">
+          </div>
+        </div>
+
+        <div class="slide">
+          <div class="slide-content">
+            <img src="https://images.unsplash.com/photo-1504208434309-cb69f4fe52b0?q=80&w=1600&auto=format&fit=crop" alt="Медитация и спокойствие: человек на фоне природы">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ----- СПЕЦИАЛИСТЫ ----- -->
+  <section class="specialists-section" id="specialists">
+    <h2>Наши специалисты</h2>
+
+    <div class="specialists-grid">
+
+      <div class="specialist-card" data-id="1" data-bio="Психолог-консультант с 8-летним опытом работы. Специализируется на тревоге, стресс-менеджменте и проблемах сна. Использует когнитивно-поведенческую терапию и техники релаксации.">
+        <div class="spec-photo">
+          <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=300&auto=format&fit=crop" alt="Иванова Алина Петрова">
+        </div>
+        <div class="spec-info">
+          <h3>Иванова Алина Петрова</h3>
+          <div class="btn-group">
+            <button class="consult-btn">Консультация</button>
+            <button class="more-btn">Подробнее</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="specialist-card" data-id="2" data-bio="Клинический психолог, работает с подростками и взрослыми. Ведет когнитивно-поведенческую терапию, имеет сертификаты по работе с ПТСР и тревожными расстройствами.">
+        <div class="spec-photo">
+          <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=300&auto=format&fit=crop" alt="Петров Сергей Петров">
+        </div>
+        <div class="spec-info">
+          <h3>Петров Сергей Петров</h3>
+          <div class="btn-group">
+            <button class="consult-btn">Консультация</button>
+            <button class="more-btn">Подробнее</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="specialist-card" data-id="3" data-bio="Психолог с фокусом на семейной терапии и парных сессиях. Помогает восстанавливать коммуникацию и решать конфликты. Применяет системный подход и эмпатическое слушание.">
+        <div class="spec-photo">
+          <img src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=300&auto=format&fit=crop" alt="Мария Ковалёва Петрова">
+        </div>
+        <div class="spec-info">
+          <h3>Мария Ковалёва Петрова</h3>
+          <div class="btn-group">
+            <button class="consult-btn">Консультация</button>
+            <button class="more-btn">Подробнее</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="specialist-card" data-id="4" data-bio="Нейропсихолог, работает с когнитивными нарушениями, вниманием и памятью. Проводит диагностику и составление реабилитационных планов.">
+        <div class="spec-photo">
+          <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=300&auto=format&fit=crop" alt="Антон Красов Петров">
+        </div>
+        <div class="spec-info">
+          <h3>Антон Красов Петров</h3>
+          <div class="btn-group">
+            <button class="consult-btn">Консультация</button>
+            <button class="more-btn">Подробнее</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="specialist-card" data-id="5" data-bio="Психотерапевт с международным образованием. Специализируется на работе с депрессией и хроническим стрессом. Проводит индивидуальные и групповые сессии.">
+        <div class="spec-photo">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop" alt="Екатерина Смирнова Петрова">
+        </div>
+        <div class="spec-info">
+          <h3>Екатерина Смирнова Петрова</h3>
+          <div class="btn-group">
+            <button class="consult-btn">Консультация</button>
+            <button class="more-btn">Подробнее</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="specialist-card" data-id="6" data-bio="Клинический психолог и консультант по карьерному развитию. Сочетает коучинг и терапевтический подход для поиска баланса между работой и жизнью.">
+        <div class="spec-photo">
+          <img src="https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=300&auto=format&fit=crop" alt="Дмитрий Левицкий Петров">
+        </div>
+        <div class="spec-info">
+          <h3>Дмитрий Левицкий Петров</h3>
+          <div class="btn-group">
+            <button class="consult-btn">Консультация</button>
+            <button class="more-btn">Подробнее</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ----- ТЕСТЫ ----- -->
+  <section class="tests-section" id="tests">
+    <h2>Психологические тесты</h2>
+
+    <div class="tests-grid">
+
+      <div class="test-card">
+        <h3>Тест на уровень стресса</h3>
+        <p>
+          Определите свой текущий уровень эмоционального напряжения.
+          Тест покажет, насколько сильно стресс влияет на вашу жизнь
+          и подскажет, как его уменьшить.
+        </p>
+        <a class="test-link" href="tests/stress.html">Пройти</a>
+      </div>
+
+      <div class="test-card">
+        <h3>Тест на тревожность</h3>
+        <p>
+          Узнайте, испытываете ли вы повышенную тревожность.
+          Подробный анализ и рекомендации помогут понять,
+          когда стоит обратиться к специалисту.
+        </p>
+        <a class="test-link" href="tests/anxiety.html">Пройти</a>
+      </div>
+
+      <div class="test-card">
+        <h3>Тест на депрессию</h3>
+        <p>
+          Проверка симптомов депрессии по валидированной методике.
+          Результат покажет возможный уровень депрессивных проявлений.
+        </p>
+        <a class="test-link" href="tests/depression.html">Пройти</a>
+      </div>
+
+      <div class="test-card">
+        <h3>Тест на выгорание</h3>
+        <p>
+          Оцените степень эмоционального выгорания: рабочее,
+          личностное или общее. Получите рекомендации по восстановлению.
+        </p>
+        <a class="test-link" href="tests/burnout.html">Пройти</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ----- ПОДПИСКИ ----- -->
+  <section class="subs-section" id="subscriptions">
+    <h2>Подписки</h2>
+
+    <div class="subs-grid">
+
+      <!-- Подписка 1 -->
+      <div class="sub-card">
+        <h3>Basic</h3>
+        <p class="price">699 ₽ / месяц</p>
+        <ul>
+          <li>1 консультация в месяц</li>
+          <li>Доступ к базовым тестам</li>
+          <li>Ограниченный чат с психологом</li>
+        </ul>
+        <button>Купить</button>
+      </div>
+
+      <!-- Подписка 2 -->
+      <div class="sub-card premium">
+        <h3>Premium</h3>
+        <p class="price">1 499 ₽ / месяц</p>
+        <ul>
+          <li>3 консультации в месяц</li>
+          <li>Все тесты</li>
+          <li>Личный психолог 24/7</li>
+          <li>Закрытые вебинары</li>
+        </ul>
+        <button>Купить</button>
+      </div>
+
+      <!-- Подписка 3 -->
+      <div class="sub-card">
+        <h3>Ultimate</h3>
+        <p class="price">2 999 ₽ / месяц</p>
+        <ul>
+          <li>Неограниченные консультации</li>
+          <li>VIP-поддержка</li>
+          <li>Персональный план развития</li>
+          <li>Доступ к будущим сервисам</li>
+        </ul>
+        <button>Купить</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== ОТЗЫВЫ ===== -->
+  <section class="reviews-section" id="reviews">
+
+    <h2 class="reviews-title">Отзывы</h2>
+
+    <div class="reviews-container">
+
+      <!-- ЛЕВАЯ КОЛОНКА – СПИСОК ВРАЧЕЙ -->
+      <div class="reviews-doctors-list">
+        <div class="doctor-item" data-doctor="1">Иванова Алина</div>
+        <div class="doctor-item" data-doctor="2">Сергей Петров</div>
+        <div class="doctor-item" data-doctor="3">Мария Ковалёва</div>
+      </div>
+
+      <!-- ПРАВАЯ ОБЛАСТЬ – ОТЗЫВЫ -->
+      <div class="reviews-window">
+
+        <!-- ШАПКА ВРАЧА -->
+        <div class="reviews-header">
+          <h3 id="review-doctor-name">Выберите врача</h3>
+          <div id="review-doctor-stars">★★★★★</div>
+        </div>
+
+        <!-- СПИСОК ОТЗЫВОВ -->
+        <div id="reviews-list" class="reviews-list">
+          <p class="placeholder">Выберите врача слева, чтобы увидеть отзывы</p>
+        </div>
+
+        <!-- ОКНО ДЛЯ ВВОДА ОТЗЫВА -->
+        <div class="review-input-box">
+          <textarea placeholder="Напишите свой отзыв..."></textarea>
+          <button class="send-review-btn">Отправить</button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== GLASS GRID PANEL (вставь вместо старого "О проекте") ===== -->
+  <section id="about" aria-labelledby="glass-panel-title">
+    <div class="glass-backdrop"></div>
+
+    <div class="glass-container">
+      <h2 id="glass-panel-title">О проекте</h2>
+
+      <div class="glass-grid">
+        <!-- Card 1: О ПРОЕКТЕ -->
+        <article class="glass-card" tabindex="0" aria-labelledby="card1-title">
+          <div class="card-accent"></div>
+          <h3 id="card1-title">Проект в целом</h3>
+          <p class="card-lead">Healthy Mind Space — это современная платформа для поддержки ментального здоровья: тесты,
+            консультации, подписки и персональные планы.</p>
+          <p class="card-text">Мы объединяем экспертов, валидированные методики и удобный интерфейс, чтобы помощь была
+            доступна каждому. Простота, безопасность и научный подход — в основе нашего сервиса.</p>
+          <div class="card-actions">
+            <button class="btn-primary">Узнать больше</button>
+            <button class="btn-ghost">Контакт</button>
+          </div>
+        </article>
+
+        <!-- Card 2: МИССИЯ -->
+        <article class="glass-card" tabindex="0" aria-labelledby="card2-title">
+          <div class="card-accent"></div>
+          <h3 id="card2-title">Наша миссия</h3>
+          <p class="card-lead">Доступность и качество психологической помощи для всех, кто в ней нуждается.</p>
+          <p class="card-text">Мы создаём безопасное пространство: сертифицированные специалисты, конфиденциальность
+            данных и понятные инструменты — чтобы человек мог начать улучшать жизнь прямо сейчас.</p>
+          <div class="card-actions">
+            <button class="btn-primary">Наши стандарты</button>
+            <button class="btn-ghost">Команда</button>
+          </div>
+        </article>
+
+        <!-- Card 3: ПОДХОД -->
+        <article class="glass-card" tabindex="0" aria-labelledby="card3-title">
+          <div class="card-accent"></div>
+          <h3 id="card3-title">Наш подход</h3>
+          <p class="card-lead">Индивидуальность, эмпатия, результат.</p>
+          <p class="card-text">Комбинируем данные тестов, опыт специалистов и персональные планы. Предлагаем короткие
+            шаги и долгосрочные пути — чтобы было ясно, куда двигаться.</p>
+          <div class="card-actions">
+            <button class="btn-primary">Посмотреть путь</button>
+            <button class="btn-ghost">Отзывы</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container" id="contacts">
+
+      <!-- Контакты -->
+      <div>
+        <h3>Контакты</h3>
+        <p>Email: <a href="mailto:info@healthymindspace.com">info@healthymindspace.com</a></p>
+        <p>Телефон: <a href="tel:+79999999999">+7 (999) 999-99-99</a></p>
+        <p>Адрес: Москва, ул. Примерная, 10</p>
+      </div>
+
+      <!-- Лого текст -->
+      <div class="center">
+        <h1>HEALTHY MIND SPACE</h1>
+      </div>
+
+      <!-- Навигация -->
+      <div style="text-align: right;">
+        <ul>
+          <h3>Навигация</h3>
+          <li><a href="specialists">Консультации</a></li>
+          <li><a href="tests">Тесты</a></li>
+          <li><a href="subscriptions">Подписки</a></li>
+          <li><a href="reviews">Отзывы</a></li>
+          <li><a href="about">О Проекте</a></li>
+          <li><a href="contacts">Контакты</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="bottom">Healthy Mind Space © 2025</div>
+  </footer>
+
+
+  <script>
+    /* Скрытие шапки при скролле */
+    let lastScroll = 0;
+    const header = document.getElementById('header');
+
+    window.addEventListener('scroll', () => {
+      const cur = window.pageYOffset;
+
+      if (cur > lastScroll && cur > 100) {
+        header.style.top = "-90px";
+      } else {
+        header.style.top = "0";
+      }
+
+      lastScroll = cur;
+    });
+
+    /* Автослайдер */
+    const slides = document.querySelector('.slides');
+    const slideItems = document.querySelectorAll('.slide');
+    let index = 0;
+
+    function activate(i) {
+      slideItems.forEach(s => s.classList.remove('active'));
+      slideItems[i].classList.add('active');
+    }
+
+    setInterval(() => {
+      index++;
+      if (index > slideItems.length - 1) index = 0;
+
+      slides.style.transform = `translateX(-${index * 100}%)`;
+      activate(index);
+
+    }, 3500);
+
+    const cards = document.querySelectorAll('.sub-card');
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        cards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+
+    // Заготовка данных
+    const reviewsData = {
+      1: {
+        name: "Иванова Алина",
+        stars: "★★★★★",
+        reviews: ["Очень внимательный специалист!", "Помогла разобраться в проблеме."]
+      },
+      2: {
+        name: "Сергей Петров",
+        stars: "★★★★☆",
+        reviews: ["Хороший врач, всё объясняет понятно."]
+      },
+      3: {
+        name: "Мария Ковалёва",
+        stars: "★★★★★",
+        reviews: ["Лучший психолог!", "Очень благодарна за помощь."]
+      }
+    };
+
+    const doctorItems = document.querySelectorAll('.doctor-item');
+    const nameBox = document.getElementById('review-doctor-name');
+    const starsBox = document.getElementById('review-doctor-stars');
+    const reviewsList = document.getElementById('reviews-list');
+
+    // Переключение врача
+
+    doctorItems.forEach(item => {
+      item.addEventListener('click', () => {
+
+        doctorItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const id = item.getAttribute('data-doctor');
+        const data = reviewsData[id];
+
+        nameBox.textContent = data.name;
+        starsBox.textContent = data.stars;
+
+        reviewsList.innerHTML = data.reviews
+          .map(r => `<div class='review-item'>${r}</div>`)
+          .join('');
+      });
+    });
+
+    // Обработка отправки отзыва: добавляем в reviewsData и отображаем в списке
+    const sendBtn = document.querySelector('.send-review-btn');
+    const reviewTextarea = document.querySelector('.review-input-box textarea');
+
+    sendBtn.addEventListener('click', () => {
+      const text = reviewTextarea.value.trim();
+      if (!text) {
+        alert('Пожалуйста, введите текст отзыва.');
+        return;
+      }
+
+      const activeDoctor = document.querySelector('.doctor-item.active');
+      if (!activeDoctor) {
+        alert('Выберите врача слева, чтобы оставить отзыв.');
+        return;
+      }
+
+      const id = activeDoctor.getAttribute('data-doctor');
+
+      if (!reviewsData[id]) {
+        reviewsData[id] = { name: activeDoctor.textContent.trim(), stars: '★★★★★', reviews: [] };
+      }
+
+      // Добавляем новый отзыв и обновляем отображение
+      reviewsData[id].reviews.push(text);
+      reviewsList.innerHTML = reviewsData[id].reviews
+        .map(r => `<div class='review-item'>${r}</div>`)
+        .join('');
+
+      // Очистить поле и прокрутить список вниз
+      reviewTextarea.value = '';
+      reviewsList.scrollTop = reviewsList.scrollHeight;
+    });
+
+    // небольшая интерактивность: при наведении чуть двигаем акцентную полоску (subtle)
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width; // 0..1
+        const accent = card.querySelector('.card-accent');
+        if (accent) accent.style.transform = `translateY(${(x - 0.5) * 6}px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        const accent = card.querySelector('.card-accent');
+        if (accent) accent.style.transform = `translateY(0)`;
+      });
+    });
+
+    /* ========== ОПЛАТА: модальное окно для подписок ========== */
+    // Создаём HTML модального окна и добавляем в DOM
+    const payOverlay = document.createElement('div');
+    payOverlay.className = 'pay-overlay';
+    payOverlay.innerHTML = `
+      <div class="pay-modal" role="dialog" aria-modal="true" aria-label="Оплата подписки">
+        <div class="header">
+          <div>
+            <strong id="pm-sub-name">Подписка</strong>
+            <div class="small" id="pm-sub-price" style="color:#666;font-size:14px">0 ₽ / месяц</div>
+          </div>
+          <button class="btn-cancel" id="pm-close">Закрыть</button>
+        </div>
+        <div class="body">
+          <div>
+            <h4>Выберите способ оплаты</h4>
+            <p class="small">Выберите банк-эквайер. Это демонстрация: реальные платёжные данные не отправляются.</p>
+            <div class="banks-list" id="banksList">
+              <div class="bank-option" data-bank="sber"><div class="bank-logo">S</div><div>Сбер</div></div>
+              <div class="bank-option" data-bank="tinkoff"><div class="bank-logo">T</div><div>Тинькофф</div></div>
+              <div class="bank-option" data-bank="alfabank"><div class="bank-logo">A</div><div>Альфа-Банк</div></div>
+              <div class="bank-option" data-bank="vtb"><div class="bank-logo">V</div><div>ВТБ</div></div>
+            </div>
+          </div>
+
+          <aside>
+            <h4>Данные платежа</h4>
+            <div class="pay-form">
+              <label class="small">Имя (на карте)</label>
+              <input type="text" id="pm-name" placeholder="IVAN IVANOV">
+              <label class="small">Номер карты (демо)</label>
+              <input type="text" id="pm-card" placeholder="0000 0000 0000 0000">
+              <div style="display:flex;gap:8px">
+                <input type="text" id="pm-exp" placeholder="MM/YY" style="flex:1">
+                <input type="text" id="pm-cvc" placeholder="CVC" style="width:120px">
+              </div>
+              <div class="pay-actions">
+                <button class="btn btn-cancel" id="pm-cancel">Отмена</button>
+                <button class="btn btn-pay" id="pm-pay">Оплатить</button>
+              </div>
+              <div class="pay-note">Демонстрационный режим — данные не отправляются в банк.</div>
+              <div id="pm-result" style="margin-top:12px"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(payOverlay);
+
+    const banksListEl = document.getElementById('banksList');
+    const pmClose = document.getElementById('pm-close');
+    const pmCancel = document.getElementById('pm-cancel');
+    const pmPay = document.getElementById('pm-pay');
+    const pmResult = document.getElementById('pm-result');
+    const pmSubName = document.getElementById('pm-sub-name');
+    const pmSubPrice = document.getElementById('pm-sub-price');
+
+    let selectedBank = null;
+    let currentCardEl = null;
+
+    banksListEl.querySelectorAll('.bank-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        banksListEl.querySelectorAll('.bank-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        selectedBank = opt.getAttribute('data-bank');
+      });
+    });
+
+    function openPaymentModal(cardEl, title, price) {
+      currentCardEl = cardEl;
+      pmSubName.textContent = title;
+      pmSubPrice.textContent = price;
+      pmResult.innerHTML = '';
+      selectedBank = null;
+      banksListEl.querySelectorAll('.bank-option').forEach(o => o.classList.remove('selected'));
+      payOverlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePaymentModal() {
+      payOverlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    pmClose.addEventListener('click', closePaymentModal);
+    pmCancel.addEventListener('click', closePaymentModal);
+
+    // Нажатие на кнопки "Купить" в карточках подписок
+    document.querySelectorAll('.subs-section .sub-card button').forEach(btn => {
+      btn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const card = btn.closest('.sub-card');
+        const title = card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : 'Подписка';
+        const price = card.querySelector('.price') ? card.querySelector('.price').textContent.trim() : '';
+        openPaymentModal(card, title, price);
+      });
+    });
+
+    pmPay.addEventListener('click', () => {
+      // Простая валидация
+      if (!selectedBank) {
+        pmResult.innerHTML = '<div style="color:#b33">Выберите банк для оплаты.</div>';
+        return;
+      }
+
+      pmResult.innerHTML = '<div style="color:#3a6">Обрабатываем платёж... Пожалуйста, подождите.</div>';
+
+      // Имитируем перенаправление на банк и успешную оплату
+      setTimeout(() => {
+        const tx = 'TX-' + Date.now().toString(36).toUpperCase().slice(-8);
+        pmResult.innerHTML = `<div class="pay-result">Оплата прошла успешно.<br>Номер операции: <strong>${tx}</strong></div>`;
+
+        // Обновляем кнопку в карточке — отмечаем как оплачено
+        if (currentCardEl) {
+          const buyBtn = currentCardEl.querySelector('button');
+          if (buyBtn) {
+            buyBtn.textContent = 'Оплачено';
+            buyBtn.disabled = true;
+            buyBtn.style.opacity = '0.85';
+            buyBtn.style.cursor = 'default';
+            buyBtn.style.background = '#dff6ef';
+            buyBtn.style.borderColor = '#4bbf8a';
+          }
+        }
+
+        // Небольшая задержка перед закрытием, чтобы пользователь успел увидеть результат
+        setTimeout(() => closePaymentModal(), 1500);
+      }, 1400);
+    });
+
+    // МОДАЛ ДЛЯ СПЕЦИАЛИСТА: создание и логика
+    const infoOverlay = document.createElement('div');
+    infoOverlay.className = 'info-overlay';
+    infoOverlay.innerHTML = `
+      <div class="info-modal" role="dialog" aria-modal="true" aria-label="Информация о специалисте">
+        <div class="left">
+          <img src="" alt="Фото специалиста" id="info-img">
+          <div id="info-name" style="font-weight:700;text-align:center"></div>
+        </div>
+        <div class="right">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h3 id="info-title"></h3>
+              <div class="meta" id="info-meta"></div>
+            </div>
+            <button id="info-close" class="btn-ghost">Закрыть</button>
+          </div>
+          <div class="bio" id="info-bio"></div>
+          <div class="actions">
+            <button class="btn-primary" id="info-book">Записаться на консультацию</button>
+            <button class="btn-ghost" id="info-contact">Написать сообщение</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(infoOverlay);
+
+    const infoImg = document.getElementById('info-img');
+    const infoTitle = document.getElementById('info-title');
+    const infoMeta = document.getElementById('info-meta');
+    const infoBio = document.getElementById('info-bio');
+    const infoClose = document.getElementById('info-close');
+    const infoBook = document.getElementById('info-book');
+    const infoContact = document.getElementById('info-contact');
+
+    function openInfoModal(card) {
+      const img = card.querySelector('.spec-photo img');
+      const name = card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : 'Специалист';
+      const bio = card.getAttribute('data-bio') || '';
+
+      infoImg.src = img ? img.src : '';
+      infoImg.alt = name;
+      infoTitle.textContent = name;
+      infoMeta.textContent = card.classList.contains('premium') ? 'Премиум специалист' : 'Специалист';
+      infoBio.textContent = bio;
+
+      infoOverlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeInfoModal() {
+      infoOverlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.spec-info .more-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = btn.closest('.specialist-card');
+        openInfoModal(card);
+      });
+    });
+
+    // Перенаправление на страницу врача при нажатии "Консультация"
+    document.querySelectorAll('.consult-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = btn.closest('.specialist-card');
+        const id = card ? card.getAttribute('data-id') : null;
+        if (id) {
+          window.location.href = `doctor.html?id=${encodeURIComponent(id)}`;
+        } else {
+          // если id не указан, переходим на страницу общего врача
+          window.location.href = 'doctor.html';
+        }
+      });
+    });
+
+    infoClose.addEventListener('click', closeInfoModal);
+    infoOverlay.addEventListener('click', (e) => { if (e.target === infoOverlay) closeInfoModal(); });
+
+    infoBook.addEventListener('click', () => {
+      // открываем форму записи: просто скроллим к разделу контактов
+      closeInfoModal();
+      const contacts = document.getElementById('contacts');
+      if (contacts) contacts.scrollIntoView({behavior:'smooth'});
+    });
+
+    infoContact.addEventListener('click', () => {
+      closeInfoModal();
+      window.location.href = 'mailto:info@healthymindspace.com?subject=Вопрос%20по%20консультации';
+    });
+
+
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Консультация — доктор</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#fbf0e3;color:#222;margin:0}
+    header{position:fixed;top:0;left:0;right:0;height:72px;background:#fff;display:flex;align-items:center;gap:18px;padding:12px 20px;box-shadow:0 3px 8px rgba(0,0,0,0.06);z-index:100}
+    main{max-width:1100px;margin:110px auto;padding:20px}
+    .card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.06)}
+    .doctor-header{display:flex;gap:20px;align-items:center}
+    .doc-photo{width:120px;height:120px;border-radius:12px;object-fit:cover}
+    .doc-meta h2{margin:0 0 6px 0}
+    .book-form{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+    .book-form input,.book-form select{padding:10px;border-radius:8px;border:1px solid #e6e4e2}
+    .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer}
+    .btn-primary{background:linear-gradient(180deg,#5A7D7C,#3f615f);color:#fff}
+    .chat-area{margin-top:18px;display:flex;gap:18px}
+    .chat-box{flex:1;display:flex;flex-direction:column;height:480px}
+    .messages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+    .msg{background:#fbfaf8;padding:10px;border-radius:10px;max-width:78%}
+    .msg.me{align-self:flex-end;background:#e8fff6}
+    .msg .time{font-size:12px;color:#777;margin-top:6px}
+    .composer{display:flex;gap:8px;margin-top:8px}
+    .composer input{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}
+    .video-col{width:360px;display:flex;flex-direction:column;gap:10px}
+    .video-local,.video-remote{width:100%;height:200px;background:#000;border-radius:10px;object-fit:cover}
+    .call-controls{display:flex;gap:8px}
+    .status{font-size:13px;color:#666}
+    @media(max-width:900px){.chat-area{flex-direction:column}.video-col{width:100%}}
+  </style>
+</head>
+<body>
+  <header><a href="/imdex.html" style="text-decoration:none;color:#333;font-weight:700">← Назад</a><div style="flex:1"></div></header>
+  <main>
+    <div class="card" id="doctorCard">
+      <div class="doctor-header">
+        <img src="" alt="Фото" id="docImg" class="doc-photo">
+        <div class="doc-meta">
+          <h2 id="docName">Доктор</h2>
+          <div id="docBio" style="color:#555;max-width:760px"></div>
+        </div>
+      </div>
+
+      <div class="book-section" id="bookSection">
+        <h3>Записаться на консультацию</h3>
+        <form class="book-form" id="bookForm">
+          <input type="text" id="pname" placeholder="Ваше имя" required>
+          <input type="tel" id="pphone" placeholder="Телефон" required>
+          <div style="display:flex;gap:8px">
+            <input type="date" id="pdate" required style="flex:1">
+            <input type="time" id="ptime" required style="width:160px">
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-primary" id="bookBtn">Записаться</button>
+            <div class="status" id="bookStatus"></div>
+          </div>
+        </form>
+      </div>
+
+      <div class="chat-section" id="chatSection" style="display:none">
+        <h3>Чат с врачом</h3>
+        <div class="chat-area">
+          <div class="chat-box">
+            <div class="messages" id="messages"></div>
+            <div class="composer">
+              <input id="msgInput" placeholder="Написать сообщение...">
+              <button class="btn" id="sendMsg">Отправить</button>
+            </div>
+          </div>
+          <div class="video-col">
+            <video id="remoteVideo" class="video-remote" autoplay playsinline></video>
+            <video id="localVideo" class="video-local" autoplay muted playsinline></video>
+            <div class="call-controls">
+              <button class="btn btn-primary" id="callBtn">Позвонить</button>
+              <button class="btn" id="hangBtn" disabled>Завершить</button>
+              <div style="flex:1"></div>
+            </div>
+            <div class="status" id="callStatus">Статус: не в звонке</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+// Получаем id врача из query param
+function getParam(name){const u=new URL(location.href);return u.searchParams.get(name)}
+const docId = getParam('id') || '1';
+
+// Простая база данных врачей (копия из imdex)
+const doctors = {
+  '1':{name:'Иванова Алина', img:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=300&auto=format&fit=crop', bio:'Психолог-консультант с 8-летним опытом. Специализация: тревога, стресс, сон.'},
+  '2':{name:'Петров Сергей', img:'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=300&auto=format&fit=crop', bio:'Клинический психолог. Работа с подростками и взрослыми.'},
+  '3':{name:'Мария Ковалёва', img:'https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=300&auto=format&fit=crop', bio:'Семейная терапия, парные сессии.'},
+  '4':{name:'Антон Красов', img:'https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=300&auto=format&fit=crop', bio:'Нейропсихолог, диагностика и реабилитация.'},
+  '5':{name:'Екатерина Смирнова', img:'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=300&auto=format&fit=crop', bio:'Психотерапевт, депрессия и хронический стресс.'},
+  '6':{name:'Дмитрий Левицкий', img:'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?q=80&w=300&auto=format&fit=crop', bio:'Клинический психолог и консультант по карьере.'}
+};
+
+const info = doctors[docId] || doctors['1'];
+document.getElementById('docImg').src = info.img;
+document.getElementById('docName').textContent = info.name;
+document.getElementById('docBio').textContent = info.bio;
+
+// Бронирование — сохраняем в localStorage
+const bookForm = document.getElementById('bookForm');
+const bookBtn = document.getElementById('bookBtn');
+const bookStatus = document.getElementById('bookStatus');
+
+bookForm.addEventListener('submit', (e)=>{e.preventDefault();
+  const name = document.getElementById('pname').value.trim();
+  const phone = document.getElementById('pphone').value.trim();
+  const date = document.getElementById('pdate').value;
+  const time = document.getElementById('ptime').value;
+  if(!name||!phone||!date||!time){bookStatus.textContent='Заполните все поля';return}
+  const booking = {name,phone,date,time,ts:Date.now()};
+  localStorage.setItem('booking-doctor-'+docId,JSON.stringify(booking));
+  bookStatus.textContent='Записано: '+date+' '+time;
+  // показываем чат
+  setTimeout(()=>{
+    document.getElementById('bookSection').style.display='none';
+    document.getElementById('chatSection').style.display='block';
+    initChat();
+  },500);
+});
+
+// Чат: синхронизация через localStorage между вкладками
+let clientId = sessionStorage.getItem('clientId');
+if(!clientId){clientId = 'c_'+Math.random().toString(36).slice(2,9); sessionStorage.setItem('clientId',clientId)}
+const chatKey = 'chat-'+docId;
+
+function loadMessages(){
+  const raw = localStorage.getItem(chatKey);
+  if(!raw) return [];
+  try{return JSON.parse(raw)}catch(e){return []}
+}
+
+function renderMessages(){
+  const ms = loadMessages();
+  const out = document.getElementById('messages'); out.innerHTML='';
+  ms.forEach(m=>{
+    const d = document.createElement('div'); d.className='msg '+(m.client===clientId?'me':''); d.innerHTML = `<div>${m.text}</div><div class="time">${new Date(m.ts).toLocaleString()}</div>`;
+    out.appendChild(d);
+  });
+  out.scrollTop = out.scrollHeight;
+}
+
+window.addEventListener('storage', (e)=>{
+  if(e.key===chatKey){ renderMessages(); }
+  // webrtc signaling handled later by separate handlers
+});
+
+function sendMessage(text){
+  if(!text) return;
+  const messages = loadMessages();
+  messages.push({client:clientId,text,ts:Date.now()});
+  localStorage.setItem(chatKey, JSON.stringify(messages));
+  renderMessages();
+}
+
+document.getElementById('sendMsg').addEventListener('click', ()=>{
+  const input = document.getElementById('msgInput'); const v = input.value.trim(); if(!v) return; sendMessage(v); input.value='';
+});
+
+document.getElementById('msgInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('sendMsg').click(); } });
+
+function initChat(){ renderMessages(); }
+
+// Если уже есть бронь — показываем чат сразу
+if(localStorage.getItem('booking-doctor-'+docId)){
+  document.getElementById('bookSection').style.display='none';
+  document.getElementById('chatSection').style.display='block';
+  initChat();
+}
+
+// ===== WebRTC звонки (localStorage по умолчанию). При наличии `window.FIREBASE_CONFIG` используется Firebase Realtime Database для сигналинга между разными устройствами =====
+let pc = null;
+let localStream = null;
+let remoteStream = null;
+const cfg = {iceServers:[{urls:['stun:stun.l.google.com:19302']}]};
+
+const offerKey = 'webrtc-offer-'+docId;
+const answerKey = 'webrtc-answer-'+docId;
+const iceKey = 'webrtc-ice-'+docId;
+
+// Firebase signaling (опционально)
+let firebaseEnabled = false;
+let firebaseDB = null;
+
+async function tryInitFirebase(){
+  if(!window.FIREBASE_CONFIG) return false;
+  // Подгружаем compat SDK
+  try{
+    await new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js'; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+    await new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js'; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+    firebase.initializeApp(window.FIREBASE_CONFIG);
+    firebaseDB = firebase.database();
+    firebaseEnabled = true;
+    console.info('Firebase signaling enabled');
+    // Подписки на изменения
+    firebaseDB.ref('signals/'+docId+'/offer').on('value', snapshot=>{ const v=snapshot.val(); if(v) handleOffer(v); });
+    firebaseDB.ref('signals/'+docId+'/answer').on('value', snapshot=>{ const v=snapshot.val(); if(v) handleAnswer(v); });
+    firebaseDB.ref('signals/'+docId+'/ice').on('child_added', snapshot=>{ const v=snapshot.val(); if(v && v.from!==clientId && pc){ try{ pc.addIceCandidate(v.cand); }catch(e){} } });
+    return true;
+  }catch(e){ console.warn('Firebase init failed', e); return false; }
+}
+
+// Инициализация не блокирует интерфейс
+tryInitFirebase();
+
+async function startLocalStream(){
+  try{ localStream = await navigator.mediaDevices.getUserMedia({video:true,audio:true}); document.getElementById('localVideo').srcObject = localStream; }catch(e){ alert('Не удалось получить доступ к камере/микрофону: '+e.message) }
+}
+
+function createPC(){
+  pc = new RTCPeerConnection(cfg);
+  remoteStream = new MediaStream(); document.getElementById('remoteVideo').srcObject = remoteStream;
+  if(localStream) localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+  pc.ontrack = (ev)=>{ ev.streams[0].getTracks().forEach(t=>remoteStream.addTrack(t)); };
+  pc.onicecandidate = (ev)=>{
+    if(!ev.candidate) return;
+    if(firebaseEnabled && firebaseDB){
+      firebaseDB.ref('signals/'+docId+'/ice').push({from:clientId,cand:ev.candidate});
+    } else {
+      const arr = JSON.parse(localStorage.getItem(iceKey)||'[]'); arr.push({from:clientId,cand:ev.candidate}); localStorage.setItem(iceKey,JSON.stringify(arr));
+    }
+  };
+}
+
+async function makeCall(){
+  document.getElementById('callStatus').textContent='Статус: инициализация звонка...';
+  await startLocalStream(); createPC();
+  const offer = await pc.createOffer(); await pc.setLocalDescription(offer);
+  if(firebaseEnabled && firebaseDB){
+    await firebaseDB.ref('signals/'+docId+'/offer').set({from:clientId,desc:pc.localDescription.toJSON()});
+  } else {
+    localStorage.setItem(offerKey, JSON.stringify({from:clientId,desc:pc.localDescription}));
+  }
+  document.getElementById('callStatus').textContent='Статус: ожидаем ответа...';
+  document.getElementById('hangBtn').disabled=false;
+}
+
+async function handleOffer(offerObj){
+  if(!offerObj || offerObj.from===clientId) return;
+  if(pc) return;
+  await startLocalStream(); createPC();
+  await pc.setRemoteDescription(new RTCSessionDescription(offerObj.desc));
+  const answer = await pc.createAnswer(); await pc.setLocalDescription(answer);
+  if(firebaseEnabled && firebaseDB){
+    await firebaseDB.ref('signals/'+docId+'/answer').set({from:clientId,desc:pc.localDescription.toJSON()});
+  } else {
+    localStorage.setItem(answerKey, JSON.stringify({from:clientId,desc:pc.localDescription}));
+  }
+  document.getElementById('callStatus').textContent='Статус: в звонке';
+  document.getElementById('hangBtn').disabled=false;
+}
+
+async function handleAnswer(ansObj){
+  if(!ansObj || ansObj.from===clientId) return;
+  if(!pc) return;
+  await pc.setRemoteDescription(new RTCSessionDescription(ansObj.desc));
+  document.getElementById('callStatus').textContent='Статус: в звонке';
+}
+
+function handleIceCandidates(){
+  if(firebaseEnabled) return; // Firebase подписка сама добавляет кандидаты
+  const arr = JSON.parse(localStorage.getItem(iceKey)||'[]');
+  arr.forEach(o=>{ if(o.from!==clientId && pc){ try{ pc.addIceCandidate(o.cand); }catch(e){} } });
+}
+
+window.addEventListener('storage',(e)=>{
+  if(firebaseEnabled) return; // при Firebase не используем localStorage сигналинг
+  if(e.key===offerKey){ try{ const o=JSON.parse(e.newValue); handleOffer(o);}catch(_){} }
+  if(e.key===answerKey){ try{ const a=JSON.parse(e.newValue); handleAnswer(a);}catch(_){} }
+  if(e.key===iceKey){ handleIceCandidates(); }
+});
+
+// Кнопки управления
+const callBtn = document.getElementById('callBtn'); const hangBtn = document.getElementById('hangBtn');
+callBtn.addEventListener('click', async ()=>{ await makeCall(); });
+hangBtn.addEventListener('click', ()=>{ if(pc){ pc.getSenders().forEach(s=>{ try{ s.track.stop(); }catch(_){} }); pc.close(); pc = null; } if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null; } document.getElementById('localVideo').srcObject=null; document.getElementById('remoteVideo').srcObject=null; document.getElementById('callStatus').textContent='Статус: не в звонке'; document.getElementById('hangBtn').disabled=true; // очистим signaling
+  localStorage.removeItem(offerKey); localStorage.removeItem(answerKey); localStorage.removeItem(iceKey);
+});
+
+// Очистка старых signaling-ключей при загрузке (безопасно)
+// (не удаляем чаты/брони)
+
+// Навигация обратно: если открыт без брони, позволяем оставить страницу и записаться позже
+
+</script>
+</body>
+</html>
